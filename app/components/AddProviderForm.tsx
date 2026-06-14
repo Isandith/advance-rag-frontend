@@ -61,21 +61,27 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
   }
 
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-zinc-950">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Add Provider</h2>
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-zinc-900/40 p-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Add Provider</h2>
+            <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
+              Add a new provider to the directory.
+            </p>
+          </div>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-200"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           >
             ✕
           </button>
         </div>
 
         {formError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-300">
+            <span aria-hidden>⚠️</span>
             {formError}
           </div>
         )}
@@ -87,7 +93,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
             />
           </Field>
 
@@ -97,7 +103,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
               required
               value={profession}
               onChange={(e) => setProfession(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
             />
           </Field>
 
@@ -107,7 +113,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
               rows={3}
               value={workDescription}
               onChange={(e) => setWorkDescription(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
             />
           </Field>
 
@@ -120,7 +126,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
               step={0.1}
               value={reliabilityScore}
               onChange={(e) => setReliabilityScore(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
             />
           </Field>
 
@@ -133,7 +139,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
               type="text"
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
             />
           </Field>
 
@@ -144,7 +150,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
               list="domain-suggestions"
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
             />
             <datalist id="domain-suggestions">
               {DOMAIN_SUGGESTIONS.map((suggestion) => (
@@ -164,7 +170,7 @@ export default function AddProviderForm({ onClose, onCreated }: AddProviderFormP
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 px-5 py-2 text-sm font-medium text-white shadow-md shadow-indigo-500/25 transition-all hover:shadow-lg hover:shadow-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
             >
               {submitting ? "Saving..." : "Save Provider"}
             </button>

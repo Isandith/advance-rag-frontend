@@ -3,12 +3,12 @@ export default function StarRating({ score }: { score: number }) {
   const fullStars = Math.round(clamped);
 
   return (
-    <span className="inline-flex items-center gap-1 text-sm">
-      <span aria-hidden className="text-amber-500">
+    <span className="inline-flex items-center gap-1.5 text-sm">
+      <span aria-hidden className="tracking-tight text-amber-400">
         {"★".repeat(fullStars)}
-        {"☆".repeat(5 - fullStars)}
+        <span className="text-zinc-300 dark:text-zinc-700">{"★".repeat(5 - fullStars)}</span>
       </span>
-      <span className="text-zinc-500 dark:text-zinc-400">{clamped.toFixed(1)} / 5</span>
+      <span className="font-medium text-zinc-500 dark:text-zinc-400">{clamped.toFixed(1)}</span>
     </span>
   );
 }
