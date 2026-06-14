@@ -1,18 +1,57 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ApiError, ChatMessage, sendChatMessage } from "./lib/api";
+import { startTransition, useEffect, useRef, useState } from "react";
+import ProviderCard from "./components/ProviderCard";
+import {
+  ApiError,
+  ChatMessage,
+  fetchProviders,
+  findMentionedProviders,
+  Provider,
+  sendChatMessage,
+} from "./lib/api";
+
+const CHAT_STORAGE_KEY = "chat:state";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as { messages: ChatMessage[]; sessionId: string | null };
+        setMessages(parsed.messages ?? []);
+        setSessionId(parsed.sessionId ?? null);
+      } catch {
+        // ignore corrupted storage
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({ messages, sessionId }));
+  }, [messages, sessionId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    startTransition(() => {
+      fetchProviders()
+        .then(setProviders)
+        .catch(() => {
+          // provider cards are an enhancement; ignore failures here
+        });
+    });
+  }, []);
 
   async function handleSend() {
     const trimmed = input.trim();
@@ -24,8 +63,15 @@ export default function ChatPage() {
     setError(null);
 
     try {
-      const response = await sendChatMessage(trimmed);
-      setMessages((prev) => [...prev, { role: "assistant", content: response.answer }]);
+      const response = await sendChatMessage(trimmed, sessionId);
+      const mentionedProviders = findMentionedProviders(response.answer, providers);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response.answer, providers: mentionedProviders },
+      ]);
+      if (response.session_id) {
+        setSessionId(response.session_id);
+      }
     } catch (err) {
       const message = err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
       setError(message);
@@ -53,7 +99,7 @@ export default function ChatPage() {
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex flex-col gap-2 ${msg.role === "user" ? "items-end" : "items-start"}`}
               >
                 <div
                   className={`max-w-[75%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm ${
@@ -64,6 +110,13 @@ export default function ChatPage() {
                 >
                   {msg.content}
                 </div>
+                {msg.providers && msg.providers.length > 0 && (
+                  <div className="grid w-full max-w-[75%] grid-cols-1 gap-3 sm:grid-cols-2">
+                    {msg.providers.map((provider) => (
+                      <ProviderCard key={provider.id} provider={provider} />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {loading && (

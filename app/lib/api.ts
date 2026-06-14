@@ -3,6 +3,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+  providers?: Provider[];
 }
 
 export interface ChatResponse {
@@ -73,11 +74,11 @@ async function parseErrorResponse(res: Response): Promise<ApiError> {
   return new ApiError(message, res.status, fieldErrors);
 }
 
-export async function sendChatMessage(message: string): Promise<ChatResponse> {
+export async function sendChatMessage(message: string, sessionId: string | null): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE_URL}/chat/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, session_id: sessionId }),
   });
 
   if (!res.ok) {
@@ -95,6 +96,12 @@ export async function fetchProviders(): Promise<Provider[]> {
   }
 
   return res.json();
+}
+
+export function findMentionedProviders(answer: string, providers: Provider[]): Provider[] {
+  return providers.filter((provider) =>
+    new RegExp(`\\b${provider.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(answer)
+  );
 }
 
 export async function createProvider(input: CreateProviderInput): Promise<CreateProviderResponse> {
