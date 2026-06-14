@@ -98,10 +98,21 @@ export async function fetchProviders(): Promise<Provider[]> {
   return res.json();
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function termMatches(term: string, answer: string): boolean {
+  const trimmed = term.trim();
+  if (!trimmed) return false;
+  return new RegExp(`\\b${escapeRegExp(trimmed)}\\b`, "i").test(answer);
+}
+
 export function findMentionedProviders(answer: string, providers: Provider[]): Provider[] {
-  return providers.filter((provider) =>
-    new RegExp(`\\b${provider.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(answer)
-  );
+  return providers.filter((provider) => {
+    const terms = [provider.name, provider.profession, provider.domain, ...provider.keywords];
+    return terms.some((term) => termMatches(term, answer));
+  });
 }
 
 export async function createProvider(input: CreateProviderInput): Promise<CreateProviderResponse> {
