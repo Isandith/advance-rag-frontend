@@ -109,10 +109,7 @@ function termMatches(term: string, answer: string): boolean {
 }
 
 export function findMentionedProviders(answer: string, providers: Provider[]): Provider[] {
-  return providers.filter((provider) => {
-    const terms = [provider.name, provider.profession, provider.domain, ...provider.keywords];
-    return terms.some((term) => termMatches(term, answer));
-  });
+  return providers.filter((provider) => termMatches(provider.name, answer));
 }
 
 export async function createProvider(input: CreateProviderInput): Promise<CreateProviderResponse> {
