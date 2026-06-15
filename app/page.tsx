@@ -87,8 +87,26 @@ export default function ChatPage() {
     }
   }
 
+  function handleReset() {
+    setMessages([]);
+    setSessionId(null);
+    setError(null);
+    setInput("");
+    sessionStorage.removeItem(CHAT_STORAGE_KEY);
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-6">
+      <div className="mb-3 flex items-center justify-end">
+        <button
+          onClick={handleReset}
+          disabled={messages.length === 0 && !sessionId}
+          className="flex items-center gap-1.5 rounded-full border border-zinc-200/70 bg-white/90 px-4 py-1.5 text-sm font-medium text-zinc-500 shadow-sm backdrop-blur-sm transition-all hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800/70 dark:bg-zinc-900/80 dark:text-zinc-400 dark:hover:text-zinc-100"
+        >
+          <span aria-hidden>↺</span>
+          Reset chat
+        </button>
+      </div>
       <div className="flex flex-1 flex-col overflow-y-auto rounded-2xl border border-zinc-200/70 bg-white/80 p-4 shadow-sm shadow-zinc-200/50 backdrop-blur-sm sm:p-6 dark:border-zinc-800/70 dark:bg-zinc-950/60 dark:shadow-none">
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
